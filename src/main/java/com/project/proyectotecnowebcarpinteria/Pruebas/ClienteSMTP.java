@@ -54,11 +54,11 @@ public class ClienteSMTP {
                 System.out.println("S : " + getMultiline(entrada));
 
                 // Indicar el remitente
-                enviarComando(salida, "MAIL FROM : " + correoEmisor + " \r\n");
+                enviarComando(salida, "MAIL FROM: " + correoEmisor + " \r\n");
                 System.out.println("S : " + entrada.readLine());
 
                 // Indicar el destinatario
-                enviarComando(salida, "RCPT TO : " + destinatario + " \r\n");
+                enviarComando(salida, "RCPT TO: " + destinatario + " \r\n");
                 System.out.println("S : " + entrada.readLine());
 
                 // Iniciar el cuerpo del mensaje

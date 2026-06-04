@@ -16,8 +16,8 @@ public class ServidorSMTP {
         // TODO Auto-generated method stub
         String servidor="mail.ficct.uagrm.edu.bo";
         //String servidor="172.20.172.254";
-        String user_receptor="grupo07sa@tecnoweb.org.bo";
-        String user_emisor="erikaguilar189@gmail.com";
+        String user_receptor="erikaguilar189@gmail.com";
+        String user_emisor="grupo07sa@tecnoweb.org.bo";
         String line;
         String comando="";
         int puerto=25;
@@ -37,12 +37,12 @@ public class ServidorSMTP {
                 salida.writeBytes( comando );
                 System.out.println("S : "+getMultiline(entrada));
 
-                comando="MAIL FROM : "+user_emisor+" \r\n";
+                comando="MAIL FROM: "+user_emisor+" \r\n";
                 System.out.print("C : "+comando);
                 salida.writeBytes( comando );
                 System.out.println("S : "+entrada.readLine());
 
-                comando="RCPT TO : "+user_receptor+" \r\n";
+                comando="RCPT TO: "+user_receptor+" \r\n";
                 System.out.print("C : "+comando);
                 salida.writeBytes( comando );
                 System.out.println("S : "+entrada.readLine());

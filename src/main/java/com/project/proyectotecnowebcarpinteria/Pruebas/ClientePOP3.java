@@ -61,6 +61,10 @@ public class ClientePOP3 {
      * Ejecuta el comando LIST y devuelve el número total de mensajes
      * disponibles en el buzón. Devuelve 0 si el buzón está vacío.
      *
+     * La respuesta del servidor tiene la cabecera "+OK N M" leída antes por
+     * getMultiline, y luego líneas con el formato "num octetos" (una por mensaje).
+     * Contar esas líneas da el número exacto de mensajes.
+     *
      * @return Número de mensajes en el buzón.
      * @throws IOException Si ocurre un error de comunicación.
      */
@@ -69,18 +73,15 @@ public class ClientePOP3 {
         String respuesta = getMultiline(entrada);
         System.out.println("S : " + respuesta);
 
-        // La primera línea es "+OK N messages (M octets)"
-        String primeraLinea = respuesta.trim().split("\n")[0];
-        try {
-            // Extrae el número total de mensajes del inicio de la respuesta
-            String[] partes = primeraLinea.trim().split("\\s+");
-            if (partes.length >= 2) {
-                return Integer.parseInt(partes[1]);
+        // Cada línea no vacía del resultado LIST corresponde a un mensaje.
+        // Formato de cada línea: "<numero> <octetos>"  ej: "1 2340"
+        int count = 0;
+        for (String linea : respuesta.split("\n")) {
+            if (!linea.trim().isEmpty()) {
+                count++;
             }
-        } catch (NumberFormatException e) {
-            System.out.println("No se pudo parsear el número de mensajes.");
         }
-        return 0;
+        return count;
     }
 
     /**

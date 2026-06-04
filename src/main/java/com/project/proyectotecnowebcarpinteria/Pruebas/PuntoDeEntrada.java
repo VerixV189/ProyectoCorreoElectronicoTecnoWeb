@@ -32,13 +32,13 @@ public class PuntoDeEntrada {
     // -------------------------------------------------------------------------
     private static final String SMTP_SERVIDOR = "mail.ficct.uagrm.edu.bo";
     private static final int    SMTP_PUERTO   = 25;
-    private static final String SMTP_EMISOR   = "grupo07sa@tecnoweb.org.bo";
+    private static final String SMTP_EMISOR   = "grupo07sa@tecnoweg.org.bo";
 
     // -------------------------------------------------------------------------
     // Configuración del bucle de polling
     // -------------------------------------------------------------------------
     /** Tiempo de espera entre cada revisión del buzón (en segundos). */
-    private static final int INTERVALO_SEGUNDOS = 30;
+    private static final int INTERVALO_SEGUNDOS = 10;
 
     // -------------------------------------------------------------------------
     // Orquestación principal
@@ -86,7 +86,12 @@ public class PuntoDeEntrada {
                 // 3e. Enviar la respuesta al emisor (si se pudo identificar)
                 if (emisor != null && !emisor.isBlank()) {
                     System.out.println("=== Enviando respuesta a: " + emisor + " ===");
-                    smtp.enviarCorreo(emisor, "RE: Respuesta del sistema de carpintería", respuesta);
+                    try {
+                        smtp.enviarCorreo(emisor, "RE: Respuesta del sistema de carpintería", respuesta);
+                    } catch (Exception smtpEx) {
+                        System.err.println("⚠ No se pudo enviar el correo de respuesta: " + smtpEx.getMessage());
+                        System.err.println("  La respuesta que se intentó enviar fue:\n" + respuesta);
+                    }
                 } else {
                     System.out.println("No se pudo identificar el emisor. Se omite el envío de respuesta.");
                 }
