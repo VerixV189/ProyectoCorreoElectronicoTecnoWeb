@@ -32,7 +32,7 @@ public class PuntoDeEntrada {
     // -------------------------------------------------------------------------
     private static final String SMTP_SERVIDOR = "mail.ficct.uagrm.edu.bo";
     private static final int    SMTP_PUERTO   = 25;
-    private static final String SMTP_EMISOR   = "grupo07sa@tecnoweg.org.bo";
+    private static final String SMTP_EMISOR   = "grupo07sa@tecnoweb.org.bo";
 
     // -------------------------------------------------------------------------
     // Configuración del bucle de polling
