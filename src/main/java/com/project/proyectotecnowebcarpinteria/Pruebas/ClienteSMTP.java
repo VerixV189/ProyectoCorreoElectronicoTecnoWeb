@@ -17,7 +17,7 @@ public class ClienteSMTP {
     /**
      * Crea una nueva instancia con los parámetros de conexión SMTP.
      *
-     * @param servidor     Dirección del servidor SMTP (ej: "mail.ficct.uagrm.edu.bo")
+     * @param servidor     Dirección del servidor SMTP (ej: "mail.tecnoweb.org.bo")
      * @param puerto       Puerto SMTP (generalmente 25)
      * @param correoEmisor Dirección de correo del remitente
      */
@@ -54,11 +54,11 @@ public class ClienteSMTP {
                 System.out.println("S : " + getMultiline(entrada));
 
                 // Indicar el remitente
-                enviarComando(salida, "MAIL FROM: " + correoEmisor + " \r\n");
+                enviarComando(salida, "MAIL FROM: <" + correoEmisor + "> \r\n");
                 System.out.println("S : " + entrada.readLine());
 
                 // Indicar el destinatario
-                enviarComando(salida, "RCPT TO: " + destinatario + " \r\n");
+                enviarComando(salida, "RCPT TO: <" + destinatario + "> \r\n");
                 System.out.println("S : " + entrada.readLine());
 
                 // Iniciar el cuerpo del mensaje

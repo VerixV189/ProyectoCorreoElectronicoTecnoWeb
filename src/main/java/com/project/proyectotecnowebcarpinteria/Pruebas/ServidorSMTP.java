@@ -14,7 +14,7 @@ import java.net.*;
 public class ServidorSMTP {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-        String servidor="mail.ficct.uagrm.edu.bo";
+        String servidor="mail.tecnoweb.org.bo";
         //String servidor="172.20.172.254";
         String user_receptor="erikaguilar189@gmail.com";
         String user_emisor="grupo07sa@tecnoweb.org.bo";
@@ -37,12 +37,12 @@ public class ServidorSMTP {
                 salida.writeBytes( comando );
                 System.out.println("S : "+getMultiline(entrada));
 
-                comando="MAIL FROM: "+user_emisor+" \r\n";
+                comando="MAIL FROM: <"+user_emisor+"> \r\n";
                 System.out.print("C : "+comando);
                 salida.writeBytes( comando );
                 System.out.println("S : "+entrada.readLine());
 
-                comando="RCPT TO: "+user_receptor+" \r\n";
+                comando="RCPT TO: <"+user_receptor+"> \r\n";
                 System.out.print("C : "+comando);
                 salida.writeBytes( comando );
                 System.out.println("S : "+entrada.readLine());

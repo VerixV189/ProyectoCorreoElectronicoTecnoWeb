@@ -30,9 +30,9 @@ public class PuntoDeEntrada {
     // -------------------------------------------------------------------------
     // Configuración SMTP (envío)
     // -------------------------------------------------------------------------
-    private static final String SMTP_SERVIDOR = "mail.ficct.uagrm.edu.bo";
-    private static final int    SMTP_PUERTO   = 25;
-    private static final String SMTP_EMISOR   = "grupo07sa@tecnoweb.org.bo";
+    private static final String SMTP_SERVIDOR   = "mail.tecnoweb.org.bo";
+    private static final int    SMTP_PUERTO     = 25;
+    private static final String SMTP_EMISOR     = "grupo07sa@tecnoweb.org.bo";
 
     // -------------------------------------------------------------------------
     // Configuración del bucle de polling
@@ -87,7 +87,7 @@ public class PuntoDeEntrada {
                 if (emisor != null && !emisor.isBlank()) {
                     System.out.println("=== Enviando respuesta a: " + emisor + " ===");
                     try {
-                        smtp.enviarCorreo(emisor, "RE: Respuesta del sistema de carpintería", respuesta);
+                        smtp.enviarCorreo("grupo07sa@tecnoweb.org.bo", "RE: Respuesta del sistema de carpintería", respuesta);
                     } catch (Exception smtpEx) {
                         System.err.println("⚠ No se pudo enviar el correo de respuesta: " + smtpEx.getMessage());
                         System.err.println("  La respuesta que se intentó enviar fue:\n" + respuesta);
