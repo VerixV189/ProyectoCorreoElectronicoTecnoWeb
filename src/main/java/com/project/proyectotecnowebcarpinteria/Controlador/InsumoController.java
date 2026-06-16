@@ -22,19 +22,17 @@ public class InsumoController {
         return insumo.listar();
     }
 
-    public int registrar(String nombre, String imagen, int idProveedor) {
+    public int registrar(String nombre, int idProveedor) {
         ValidacionEntrada.texto(nombre, "nombre");
-        ValidacionEntrada.texto(imagen, "imagen");
         ValidacionEntrada.id(idProveedor, "idProveedor");
-        return insumo.registrar(nombre, imagen, idProveedor);
+        return insumo.registrar(nombre, idProveedor);
     }
 
-    public void actualizar(int id, String nombre, String imagen, int idProveedor) {
+    public void actualizar(int id, String nombre, int idProveedor) {
         ValidacionEntrada.id(id, "id");
         ValidacionEntrada.texto(nombre, "nombre");
-        ValidacionEntrada.texto(imagen, "imagen");
         ValidacionEntrada.id(idProveedor, "idProveedor");
-        insumo.actualizar(id, nombre, imagen, idProveedor);
+        insumo.actualizar(id, nombre, idProveedor);
     }
 
     public void eliminar(int id) {

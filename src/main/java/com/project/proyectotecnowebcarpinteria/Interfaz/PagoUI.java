@@ -39,32 +39,32 @@ public class PagoUI implements ComandoUI {
         List<String[]> lista = controller.listar();
         if (lista == null || lista.isEmpty()) return "=== LISTA DE PAGOS ===\n(No hay pagos registrados.)";
         StringBuilder sb = new StringBuilder("=== LISTA DE PAGOS ===\n");
-        sb.append(String.format("%-5s %-12s %-10s %-10s%n", "ID", "Subtotal", "Interés", "idVenta"));
-        sb.append("-".repeat(40)).append("\n");
-        for (String[] p : lista) sb.append(String.format("%-5s %-12s %-10s %-10s%n", get(p,0), get(p,1), get(p,2), get(p,3)));
+        sb.append(String.format("%-5s %-12s %-10s %-12s %-10s%n", "ID", "Subtotal", "Interés", "Estado", "idVenta"));
+        sb.append("-".repeat(55)).append("\n");
+        for (String[] p : lista) sb.append(String.format("%-5s %-12s %-10s %-12s %-10s%n", get(p,0), get(p,1), get(p,2), get(p,3), get(p,4)));
         return sb.toString();
     }
 
     private String registrar(String params) {
-        String[] p = split(params, 3, "subtotal,interes,idVenta");
-        int id = controller.registrar(parseFloat(p[0], "subtotal"), parseFloat(p[1], "interes"), parseInt(p[2], "idVenta"));
+        String[] p = split(params, 4, "subtotal,interes,estado,idVenta");
+        int id = controller.registrar(parseFloat(p[0], "subtotal"), parseFloat(p[1], "interes"), p[2], parseInt(p[3], "idVenta"));
         return "=== PAGO REGISTRADO ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
-        String[] p = split(params, 4, "id,subtotal,interes,idVenta");
-        controller.actualizar(parseInt(p[0], "id"), parseFloat(p[1], "subtotal"), parseFloat(p[2], "interes"), parseInt(p[3], "idVenta"));
+        String[] p = split(params, 5, "id,subtotal,interes,estado,idVenta");
+        controller.actualizar(parseInt(p[0], "id"), parseFloat(p[1], "subtotal"), parseFloat(p[2], "interes"), p[3], parseInt(p[4], "idVenta"));
         return "=== PAGO ACTUALIZADO ===\nID: " + p[0] + " actualizado correctamente.";
     }
 
     private String eliminar(String params) {
         int id = parseInt(params.trim(), "id");
         controller.eliminar(id);
-        return "=== PAGO ELIMINADO ===\nID: " + id + " eliminado correctamente.";
+        return "=== PAGO ELIMINADA ===\nID: " + id + " eliminado correctamente.";
     }
 
     private String[] split(String params, int expected, String formato) {
-        String[] p = params.split(",", -1);
+        String[] p = params.split("\u001F", -1);
         if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parámetros: " + formato + "\nRecibidos: " + p.length);
         return p;
     }
@@ -73,7 +73,7 @@ public class PagoUI implements ComandoUI {
     private String get(String[] arr, int i) { return (arr != null && i < arr.length && arr[i] != null) ? arr[i] : "-"; }
     private String error(String cmd, String motivo) {
         return "=== ERROR ===\nComando: " + cmd + "\nMotivo: " + motivo + "\n=============\n"
-                + "Uso:\n  LISPAG[*]\n  REGPAG[subtotal,interes,idVenta]\n"
-                + "  ACTPAG[id,subtotal,interes,idVenta]\n  ELIMPAG[id]";
+                + "Uso:\n  LISPAG[*]\n  REGPAG[subtotal,interes,estado,idVenta]\n"
+                + "  ACTPAG[id,subtotal,interes,estado,idVenta]\n  ELIMPAG[id]";
     }
 }

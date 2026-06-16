@@ -16,7 +16,7 @@ import java.util.List;
  * @author erik
  */
 public class Imagen {
-    // Listar insumos
+    // Listar imagenes
     public List<String[]> listar() {
         List<String[]> lista = new ArrayList<>();
         String query = "SELECT * FROM imagen";
@@ -26,12 +26,13 @@ public class Imagen {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] fila = new String[5];
+                String[] fila = new String[6];
                 fila[0] = String.valueOf(rs.getInt(1));
                 fila[1] = rs.getString(2);
                 fila[2] = rs.getString(3);
                 fila[3] = rs.getString(4);
                 fila[4] = rs.getString(5);
+                fila[5] = rs.getString(6);
                 lista.add(fila);
             }
         } catch (SQLException ex) {
@@ -41,13 +42,22 @@ public class Imagen {
     }
 
     // Registrar imagen
-    public int registrar(String url, int id_producto) {
-        String query = "INSERT INTO imagen (url, id_producto) VALUES (?, ?)";
+    public int registrar(String url, int id_producto, int id_insumo) {
+        String query = "INSERT INTO imagen (url, id_producto, id_insumo) VALUES (?, ?, ?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
             pst.setString(1, url);
-            pst.setInt(2, id_producto);
+            if (id_producto <= 0) {
+                pst.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(2, id_producto);
+            }
+            if (id_insumo <= 0) {
+                pst.setNull(3, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(3, id_insumo);
+            }
             int filasAfectadas = pst.executeUpdate();
 
             if (filasAfectadas > 0) {
@@ -64,15 +74,24 @@ public class Imagen {
         }
     }
 
-    // Actualizar Insumo
-    public void actualizar(int id, String url, int id_producto) {
-        String query = "UPDATE imagen SET url = ?, id_producto = ? WHERE id = ?";
+    // Actualizar imagen
+    public void actualizar(int id, String url, int id_producto, int id_insumo) {
+        String query = "UPDATE imagen SET url = ?, id_producto = ?, id_insumo = ? WHERE id = ?";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query);
 
             pst.setString(1, url);
-            pst.setInt(2, id_producto);
-            pst.setInt(3, id);
+            if (id_producto <= 0) {
+                pst.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(2, id_producto);
+            }
+            if (id_insumo <= 0) {
+                pst.setNull(3, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(3, id_insumo);
+            }
+            pst.setInt(4, id);
 
             pst.executeUpdate();
         } catch (SQLException ex) {

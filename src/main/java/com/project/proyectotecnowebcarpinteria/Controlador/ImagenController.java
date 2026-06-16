@@ -22,17 +22,27 @@ public class ImagenController {
         return imagen.listar();
     }
 
-    public int registrar(String url, int idProducto) {
+    public int registrar(String url, int idProducto, int idInsumo) {
         ValidacionEntrada.texto(url, "url");
-        ValidacionEntrada.id(idProducto, "idProducto");
-        return imagen.registrar(url, idProducto);
+        if (idProducto > 0) {
+            ValidacionEntrada.id(idProducto, "idProducto");
+        }
+        if (idInsumo > 0) {
+            ValidacionEntrada.id(idInsumo, "idInsumo");
+        }
+        return imagen.registrar(url, idProducto, idInsumo);
     }
 
-    public void actualizar(int id, String url, int idProducto) {
+    public void actualizar(int id, String url, int idProducto, int idInsumo) {
         ValidacionEntrada.id(id, "id");
         ValidacionEntrada.texto(url, "url");
-        ValidacionEntrada.id(idProducto, "idProducto");
-        imagen.actualizar(id, url, idProducto);
+        if (idProducto > 0) {
+            ValidacionEntrada.id(idProducto, "idProducto");
+        }
+        if (idInsumo > 0) {
+            ValidacionEntrada.id(idInsumo, "idInsumo");
+        }
+        imagen.actualizar(id, url, idProducto, idInsumo);
     }
 
     public void eliminar(int id) {

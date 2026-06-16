@@ -56,7 +56,11 @@ public class DetallePedido {
             pst.setString(3, estado);
             pst.setString(4, descripcion);
             pst.setInt(5, id_pedido);
-            pst.setInt(6, id_producto);
+            if (id_producto <= 0) {
+                pst.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(6, id_producto);
+            }
             int filasAfectadas = pst.executeUpdate();
 
             if (filasAfectadas > 0) {
@@ -84,7 +88,11 @@ public class DetallePedido {
             pst.setString(3, estado);
             pst.setString(4, descripcion);
             pst.setInt(5, id_pedido);
-            pst.setInt(6, id_producto);
+            if (id_producto <= 0) {
+                pst.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                pst.setInt(6, id_producto);
+            }
             pst.setInt(7, id);
 
             pst.executeUpdate();

@@ -22,19 +22,21 @@ public class PagoController {
         return pago.listar();
     }
 
-    public int registrar(float subtotal, float interes, int idVenta) {
+    public int registrar(float subtotal, float interes, String estado, int idVenta) {
         ValidacionEntrada.noNegativo(subtotal, "subtotal");
         ValidacionEntrada.noNegativo(interes, "interes");
+        ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.id(idVenta, "idVenta");
-        return pago.registrar(subtotal, interes, idVenta);
+        return pago.registrar(subtotal, interes, estado, idVenta);
     }
 
-    public void actualizar(int id, float subtotal, float interes, int idVenta) {
+    public void actualizar(int id, float subtotal, float interes, String estado, int idVenta) {
         ValidacionEntrada.id(id, "id");
         ValidacionEntrada.noNegativo(subtotal, "subtotal");
         ValidacionEntrada.noNegativo(interes, "interes");
+        ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.id(idVenta, "idVenta");
-        pago.actualizar(id, subtotal, interes, idVenta);
+        pago.actualizar(id, subtotal, interes, estado, idVenta);
     }
 
     public void eliminar(int id) {

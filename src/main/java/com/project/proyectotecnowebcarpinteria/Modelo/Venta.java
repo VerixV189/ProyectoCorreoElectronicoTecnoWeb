@@ -47,7 +47,7 @@ public class Venta {
 
     // Registrar venta
     public int registrar(String codigo, Float total_costo, Date fecha_entregado, String tipo, int id_pedido, int id_cliente) {
-        String query = "INSERT INTO venta (codigo, total_costo, fecha_entregada, tipo, id_pedido, id_cliente) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO venta (codigo, total_costo, fecha_entregado, tipo, id_pedido, id_cliente) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 

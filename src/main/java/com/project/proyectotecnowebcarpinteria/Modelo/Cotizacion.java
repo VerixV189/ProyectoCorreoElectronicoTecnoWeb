@@ -44,7 +44,7 @@ public class Cotizacion {
 
     // Registrar cotizacion
     public int registrar(String descripcion, String estado, int id_cliente, int id_carpintero) {
-        String query = "INSERT INTO cotizacion (descripcion, estado, id_cliente, id_carpinterio) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO cotizacion (descripcion, estado, id_cliente, id_carpintero) VALUES (?, ?, ?, ?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 

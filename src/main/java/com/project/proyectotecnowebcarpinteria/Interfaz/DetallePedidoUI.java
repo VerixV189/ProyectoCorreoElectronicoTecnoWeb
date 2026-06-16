@@ -49,14 +49,14 @@ public class DetallePedidoUI implements ComandoUI {
     private String registrar(String params) {
         String[] p = split(params, 6, "cantidad,precio,estado,descripcion,idPedido,idProducto");
         int id = controller.registrar(parseInt(p[0], "cantidad"), parseFloat(p[1], "precio"),
-                p[2], p[3], parseInt(p[4], "idPedido"), parseInt(p[5], "idProducto"));
+                p[2], p[3], parseInt(p[4], "idPedido"), parseIntOrZero(p[5]));
         return "=== DETALLE REGISTRADO ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
         String[] p = split(params, 7, "id,cantidad,precio,estado,descripcion,idPedido,idProducto");
         controller.actualizar(parseInt(p[0], "id"), parseInt(p[1], "cantidad"), parseFloat(p[2], "precio"),
-                p[3], p[4], parseInt(p[5], "idPedido"), parseInt(p[6], "idProducto"));
+                p[3], p[4], parseInt(p[5], "idPedido"), parseIntOrZero(p[6]));
         return "=== DETALLE ACTUALIZADO ===\nID: " + p[0] + " actualizado correctamente.";
     }
 
@@ -67,11 +67,17 @@ public class DetallePedidoUI implements ComandoUI {
     }
 
     private String[] split(String params, int expected, String formato) {
-        String[] p = params.split(",", -1);
+        String[] p = params.split("\u001F", -1);
         if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parámetros: " + formato + "\nRecibidos: " + p.length);
         return p;
     }
     private int parseInt(String v, String c) { try { return Integer.parseInt(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo '" + c + "' debe ser entero. Recibido: \"" + v + "\""); } }
+    private int parseIntOrZero(String v) {
+        if (v == null || v.trim().isEmpty() || v.trim().equalsIgnoreCase("null") || v.trim().equals("0")) {
+            return 0;
+        }
+        try { return Integer.parseInt(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo 'idProducto' debe ser entero, vacío o 'null'. Recibido: \"" + v + "\""); }
+    }
     private float parseFloat(String v, String c) { try { return Float.parseFloat(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo '" + c + "' debe ser numérico. Recibido: \"" + v + "\""); } }
     private String get(String[] arr, int i) { return (arr != null && i < arr.length && arr[i] != null) ? arr[i] : "-"; }
     private String error(String cmd, String motivo) {

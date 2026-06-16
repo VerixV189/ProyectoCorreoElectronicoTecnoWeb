@@ -65,7 +65,7 @@ public class PedidoUI implements ComandoUI {
     }
 
     private String[] split(String params, int expected, String formato) {
-        String[] p = params.split(",", -1);
+        String[] p = params.split("\u001F", -1);
         if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parámetros: " + formato + "\nRecibidos: " + p.length);
         return p;
     }

@@ -29,7 +29,9 @@ public class DetallePedidoController {
         ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.texto(descripcion, "descripcion");
         ValidacionEntrada.id(idPedido, "idPedido");
-        ValidacionEntrada.id(idProducto, "idProducto");
+        if (idProducto > 0) {
+            ValidacionEntrada.id(idProducto, "idProducto");
+        }
         return detallePedido.registrar(cantidad, precio, estado, descripcion, idPedido, idProducto);
     }
 
@@ -40,7 +42,9 @@ public class DetallePedidoController {
         ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.texto(descripcion, "descripcion");
         ValidacionEntrada.id(idPedido, "idPedido");
-        ValidacionEntrada.id(idProducto, "idProducto");
+        if (idProducto > 0) {
+            ValidacionEntrada.id(idProducto, "idProducto");
+        }
         detallePedido.actualizar(id, cantidad, precio, estado, descripcion, idPedido, idProducto);
     }
 

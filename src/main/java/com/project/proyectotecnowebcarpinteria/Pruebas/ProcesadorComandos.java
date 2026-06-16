@@ -39,34 +39,106 @@ public class ProcesadorComandos {
      * @return Texto de respuesta listo para enviar por correo electrónico.
      */
     public String procesarComando(String cuerpo) {
-        if (cuerpo == null || cuerpo.isBlank()) {
-            return errorCuerpoVacio();
+        try {
+            if (cuerpo == null || cuerpo.isBlank()) {
+                return errorCuerpoVacio();
+            }
+
+            Matcher matcher = PATRON_COMANDO.matcher(cuerpo);
+
+            if (!matcher.find()) {
+                return errorFormatoInvalido(cuerpo);
+            }
+
+            String nombreRaw   = matcher.group(1);           // tal como vino (puede ser minúscula)
+            String parametros  = matcher.group(2).trim();
+            String nombreUpper = nombreRaw.toUpperCase();
+
+            // 1. Verificar mayúsculas: si el usuario mandó en minúsculas, advertir.
+            if (!nombreRaw.equals(nombreUpper)) {
+                return errorMinusculas(nombreRaw, nombreUpper, parametros);
+            }
+
+            // 2. Buscar la UI en el registro.
+            ComandoUI ui = RegistroComandos.obtener(nombreUpper);
+
+            if (ui == null) {
+                return errorComandoNoEncontrado(nombreUpper);
+            }
+
+            // 3. Parsear parámetros CSV (maneja comas dentro de comillas).
+            String parametrosNorm = parsearCSV(parametros);
+
+            // 4. Delegar la ejecución a la UI correspondiente.
+            return ui.ejecutar(nombreUpper, parametrosNorm);
+
+        } catch (Exception e) {
+            return "=== ERROR INESPERADO ===\n"
+                    + "Motivo: " + e.getMessage() + "\n"
+                    + "Verifique el formato del comando y vuelva a intentarlo.\n"
+                    + "========================\n\n"
+                    + RegistroComandos.listarComandosDisponibles();
         }
+    }
 
-        Matcher matcher = PATRON_COMANDO.matcher(cuerpo);
+    // -------------------------------------------------------------------------
+    // Parser CSV de parámetros
+    // -------------------------------------------------------------------------
 
-        if (!matcher.find()) {
-            return errorFormatoInvalido(cuerpo);
+    /**
+     * Separador interno utilizado entre los tokens extraídos del CSV.
+     * Se usa el carácter ASCII "Unit Separator" (\u001F), que nunca aparecerá
+     * en el texto de un correo normal.
+     * Las clases UI deben hacer split por este carácter en lugar de por coma.
+     */
+    static final String SEP = "\u001F";
+
+    /**
+     * Parsea una cadena de parámetros en formato CSV con soporte para:
+     *   - Comas dentro de campos entre comillas dobles.
+     *   - Comillas dobles escapadas como "" dentro de un campo.
+     *   - Parámetros sin comillas (texto plano).
+     *
+     * Ejemplos válidos:
+     *   Juan,Perez,juan@mail.com
+     *   "Juan","Perez","juan@mail.com"
+     *   "Mesa de madera, con acabados finos",5,"250.00"
+     *
+     * @param params La cadena de parámetros extraída del cuerpo del correo.
+     * @return Los tokens separados por {@link #SEP}, sin comillas envolventes.
+     */
+    private static String parsearCSV(String params) {
+        if (params == null || params.isBlank()) return params;
+
+        StringBuilder resultado = new StringBuilder();
+        StringBuilder token     = new StringBuilder();
+        boolean dentroComillas  = false;
+
+        for (int i = 0; i < params.length(); i++) {
+            char c = params.charAt(i);
+
+            if (c == '"') {
+                // Comilla doble escapada: "" dentro de un campo
+                if (dentroComillas && i + 1 < params.length() && params.charAt(i + 1) == '"') {
+                    token.append('"');
+                    i++;
+                } else {
+                    dentroComillas = !dentroComillas;
+                }
+            } else if (c == ',' && !dentroComillas) {
+                // Separador de campo (fuera de comillas)
+                if (resultado.length() > 0) resultado.append(SEP);
+                resultado.append(token.toString().trim());
+                token.setLength(0);
+            } else {
+                token.append(c);
+            }
         }
+        // Último token
+        if (resultado.length() > 0) resultado.append(SEP);
+        resultado.append(token.toString().trim());
 
-        String nombreRaw   = matcher.group(1);           // tal como vino (puede ser minúscula)
-        String parametros  = matcher.group(2).trim();
-        String nombreUpper = nombreRaw.toUpperCase();
-
-        // 1. Verificar mayúsculas: si el usuario mandó en minúsculas, advertir.
-        if (!nombreRaw.equals(nombreUpper)) {
-            return errorMinusculas(nombreRaw, nombreUpper, parametros);
-        }
-
-        // 2. Buscar la UI en el registro.
-        ComandoUI ui = RegistroComandos.obtener(nombreUpper);
-
-        if (ui == null) {
-            return errorComandoNoEncontrado(nombreUpper);
-        }
-
-        // 3. Delegar la ejecución a la UI correspondiente.
-        return ui.ejecutar(nombreUpper, parametros);
+        return resultado.toString();
     }
 
     // -------------------------------------------------------------------------

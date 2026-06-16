@@ -46,7 +46,7 @@ public class Usuario {
 
     //    Registrar usuario
     public int registrar(String nombre, String apellido, String email, String password, String telefono, String estado, int id_rol) {
-        String query = "INSERT INTO usuario (nombre, apellido, email, password, telefono, rol, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO usuario (nombre, apellido, email, password, telefono, estado, id_rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -76,7 +76,7 @@ public class Usuario {
 
     // Actualizar usuario
     public void actualizar(int id, String nombre, String apellido, String email, String password, String telefono, String estado, int id_rol) {
-        String query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, password = ?, telefono = ?, rol = ?,  estado = ? WHERE id = ?";
+        String query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, password = ?, telefono = ?, estado = ?, id_rol = ? WHERE id = ?";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query);
 

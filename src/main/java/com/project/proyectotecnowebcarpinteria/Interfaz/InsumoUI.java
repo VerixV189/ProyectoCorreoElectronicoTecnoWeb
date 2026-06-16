@@ -8,8 +8,8 @@ import java.util.List;
  *
  * Comandos soportados:
  *   LISINSU[*]
- *   REGINSU[nombre,imagen,idProveedor]
- *   ACTINSU[id,nombre,imagen,idProveedor]
+ *   REGINSU[nombre,idProveedor]
+ *   ACTINSU[id,nombre,idProveedor]
  *   ELIMINSU[id]
  */
 public class InsumoUI implements ComandoUI {
@@ -46,14 +46,14 @@ public class InsumoUI implements ComandoUI {
     }
 
     private String registrar(String params) {
-        String[] p = split(params, 3, "nombre,imagen,idProveedor");
-        int id = controller.registrar(p[0], p[1], parseInt(p[2], "idProveedor"));
+        String[] p = split(params, 2, "nombre,idProveedor");
+        int id = controller.registrar(p[0], parseInt(p[1], "idProveedor"));
         return "=== INSUMO REGISTRADO ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
-        String[] p = split(params, 4, "id,nombre,imagen,idProveedor");
-        controller.actualizar(parseInt(p[0], "id"), p[1], p[2], parseInt(p[3], "idProveedor"));
+        String[] p = split(params, 3, "id,nombre,idProveedor");
+        controller.actualizar(parseInt(p[0], "id"), p[1], parseInt(p[2], "idProveedor"));
         return "=== INSUMO ACTUALIZADO ===\nID: " + p[0] + " actualizado correctamente.";
     }
 
@@ -64,7 +64,7 @@ public class InsumoUI implements ComandoUI {
     }
 
     private String[] split(String params, int expected, String formato) {
-        String[] p = params.split(",", -1);
+        String[] p = params.split("\u001F", -1);
         if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parámetros: " + formato + "\nRecibidos: " + p.length);
         return p;
     }
@@ -72,7 +72,7 @@ public class InsumoUI implements ComandoUI {
     private String get(String[] arr, int i) { return (arr != null && i < arr.length && arr[i] != null) ? arr[i] : "-"; }
     private String error(String cmd, String motivo) {
         return "=== ERROR ===\nComando: " + cmd + "\nMotivo: " + motivo + "\n=============\n"
-                + "Uso:\n  LISINSU[*]\n  REGINSU[nombre,imagen,idProveedor]\n"
-                + "  ACTINSU[id,nombre,imagen,idProveedor]\n  ELIMINSU[id]";
+                + "Uso:\n  LISINSU[*]\n  REGINSU[nombre,idProveedor]\n"
+                + "  ACTINSU[id,nombre,idProveedor]\n  ELIMINSU[id]";
     }
 }

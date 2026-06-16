@@ -19,7 +19,7 @@ public class Carpintero {
     // Listar carpinteros
     public List<String[]> listar() {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT u.id, u.nombre, u.apellido, u.email, u.password, u.telefono, u.rol, u.estado, c.especialidad, c.costo_hora, c.created_at, c.updated_at FROM carpintero c, usuario u WHERE u.id = c.id";
+        String query = "SELECT u.id, u.nombre, u.apellido, u.email, u.password, u.telefono, u.id_rol, u.estado, c.especialidad, c.costo_hora, c.created_at, c.updated_at FROM carpintero c, usuario u WHERE u.id = c.id";
 
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement ps = con.prepareStatement(query);
