@@ -8,8 +8,8 @@ import java.util.List;
  *
  * Comandos soportados:
  *   LISCOT[*]
- *   REGCOT[descripcion,estado,idCliente,idCarpintero]
- *   ACTCOT[id,descripcion,estado,idCliente,idCarpintero]
+ *   REGCOT[descripcion,estado,idCliente]
+ *   ACTCOT[id,descripcion,estado,idCliente]
  *   ELIMCOT[id]
  */
 public class CotizacionUI implements ComandoUI {
@@ -21,7 +21,7 @@ public class CotizacionUI implements ComandoUI {
     }
 
     @Override
-    public String ejecutar(String comando, String parametros) {
+    public String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas) {
         try {
             switch (comando) {
                 case "LISCOT":  return listar();
@@ -39,21 +39,21 @@ public class CotizacionUI implements ComandoUI {
         List<String[]> lista = controller.listar();
         if (lista == null || lista.isEmpty()) return "=== LISTA DE COTIZACIONES ===\n(No hay cotizaciones registradas.)";
         StringBuilder sb = new StringBuilder("=== LISTA DE COTIZACIONES ===\n");
-        sb.append(String.format("%-5s %-30s %-12s %-10s %-10s%n", "ID", "Descripción", "Estado", "idCliente", "idCarpintero"));
-        sb.append("-".repeat(70)).append("\n");
-        for (String[] c : lista) sb.append(String.format("%-5s %-30s %-12s %-10s %-10s%n", get(c,0), get(c,1), get(c,2), get(c,3), get(c,4)));
+        sb.append(String.format("%-5s %-30s %-12s %-10s%n", "ID", "Descripción", "Estado", "idCliente"));
+        sb.append("-".repeat(60)).append("\n");
+        for (String[] c : lista) sb.append(String.format("%-5s %-30s %-12s %-10s%n", get(c,0), get(c,1), get(c,2), get(c,3)));
         return sb.toString();
     }
 
     private String registrar(String params) {
-        String[] p = split(params, 4, "descripcion,estado,idCliente,idCarpintero");
-        int id = controller.registrar(p[0], p[1], parseInt(p[2], "idCliente"), parseInt(p[3], "idCarpintero"));
+        String[] p = split(params, 3, "descripcion,estado,idCliente");
+        int id = controller.registrar(p[0], p[1], parseInt(p[2], "idCliente"));
         return "=== COTIZACIÓN REGISTRADA ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
-        String[] p = split(params, 5, "id,descripcion,estado,idCliente,idCarpintero");
-        controller.actualizar(parseInt(p[0], "id"), p[1], p[2], parseInt(p[3], "idCliente"), parseInt(p[4], "idCarpintero"));
+        String[] p = split(params, 4, "id,descripcion,estado,idCliente");
+        controller.actualizar(parseInt(p[0], "id"), p[1], p[2], parseInt(p[3], "idCliente"));
         return "=== COTIZACIÓN ACTUALIZADA ===\nID: " + p[0] + " actualizada correctamente.";
     }
 
@@ -72,7 +72,7 @@ public class CotizacionUI implements ComandoUI {
     private String get(String[] arr, int i) { return (arr != null && i < arr.length && arr[i] != null) ? arr[i] : "-"; }
     private String error(String cmd, String motivo) {
         return "=== ERROR ===\nComando: " + cmd + "\nMotivo: " + motivo + "\n=============\n"
-                + "Uso:\n  LISCOT[*]\n  REGCOT[descripcion,estado,idCliente,idCarpintero]\n"
-                + "  ACTCOT[id,descripcion,estado,idCliente,idCarpintero]\n  ELIMCOT[id]";
+                + "Uso:\n  LISCOT[*]\n  REGCOT[descripcion,estado,idCliente]\n"
+                + "  ACTCOT[id,descripcion,estado,idCliente]\n  ELIMCOT[id]";
     }
 }

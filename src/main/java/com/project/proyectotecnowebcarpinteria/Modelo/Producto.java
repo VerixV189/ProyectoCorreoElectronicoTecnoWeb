@@ -19,14 +19,17 @@ public class Producto {
     // Listar productos
     public List<String[]> listar() {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM producto";
+        String query = "SELECT p.id, p.nombre, p.cantidad, p.precio, p.descripcion, p.estado, p.id_tipo, p.created_at, p.updated_at, COALESCE(STRING_AGG(img.url, ', '), 'Sin imagen') as imagenes " +
+                       "FROM producto p LEFT JOIN imagen img ON p.id = img.id_producto " +
+                       "GROUP BY p.id, p.nombre, p.cantidad, p.precio, p.descripcion, p.estado, p.id_tipo, p.created_at, p.updated_at " +
+                       "ORDER BY p.id";
 
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] fila = new String[9];
+                String[] fila = new String[10];
                 fila[0] = String.valueOf(rs.getInt(1));
                 fila[1] = rs.getString(2);
                 fila[2] = rs.getString(3);
@@ -36,6 +39,7 @@ public class Producto {
                 fila[6] = rs.getString(7);
                 fila[7] = rs.getString(8);
                 fila[8] = rs.getString(9);
+                fila[9] = rs.getString(10);
                 lista.add(fila);
             }
         } catch (SQLException ex) {

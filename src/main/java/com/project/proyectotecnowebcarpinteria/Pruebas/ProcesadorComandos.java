@@ -38,7 +38,7 @@ public class ProcesadorComandos {
      * @param cuerpo El cuerpo del correo ya extraído (sin encabezados).
      * @return Texto de respuesta listo para enviar por correo electrónico.
      */
-    public String procesarComando(String cuerpo) {
+    public String procesarComando(String cuerpo, java.util.List<String> imagenesAdjuntas) {
         try {
             if (cuerpo == null || cuerpo.isBlank()) {
                 return errorCuerpoVacio();
@@ -70,7 +70,7 @@ public class ProcesadorComandos {
             String parametrosNorm = parsearCSV(parametros);
 
             // 4. Delegar la ejecución a la UI correspondiente.
-            return ui.ejecutar(nombreUpper, parametrosNorm);
+            return ui.ejecutar(nombreUpper, parametrosNorm, imagenesAdjuntas);
 
         } catch (Exception e) {
             return "=== ERROR INESPERADO ===\n"
@@ -145,14 +145,28 @@ public class ProcesadorComandos {
     // Utilidades de parsing de correo (estáticas, usadas por PuntoDeEntrada)
     // -------------------------------------------------------------------------
 
-    /**
-     * Extrae el cuerpo de un correo completo (encabezados + cuerpo).
-     * El cuerpo comienza después de la primera línea en blanco.
-     *
-     * @param correoCompleto Texto completo del correo (respuesta de RETR).
-     * @return El cuerpo del correo, o {@code null} si no se pudo separar.
-     */
     public static String getCuerpo(String correoCompleto) {
+        if (correoCompleto == null) return null;
+        
+        // Si es multiparte, buscar la primera parte de texto (text/plain)
+        if (correoCompleto.toLowerCase().contains("content-type: multipart/")) {
+            String boundary = extraerBoundary(correoCompleto);
+            if (boundary != null) {
+                String[] partes = correoCompleto.split("--" + boundary);
+                for (String parte : partes) {
+                    if (parte.toLowerCase().contains("content-type: text/plain") || 
+                       (!parte.toLowerCase().contains("content-type:") && parte.trim().length() > 0 && !parte.equals("--\r\n"))) {
+                        // Extraer cuerpo quitando encabezados de la parte
+                        String[] subpartes = parte.split("(\\r?\\n){2}", 2);
+                        if (subpartes.length == 2) {
+                            return subpartes[1].trim();
+                        }
+                    }
+                }
+            }
+        }
+
+        // Correo simple
         String[] partes = correoCompleto.split("(\\r?\\n){2}", 2);
         if (partes.length == 2) {
             System.out.println("Cuerpo separado correctamente.");
@@ -160,6 +174,57 @@ public class ProcesadorComandos {
         }
         System.out.println("No se pudo separar el cuerpo o el correo está vacío.");
         return null;
+    }
+
+    private static String extraerBoundary(String correo) {
+        Matcher m = Pattern.compile("boundary=\"?([^\";\\s]+)\"?").matcher(correo);
+        if (m.find()) return m.group(1);
+        return null;
+    }
+
+    /**
+     * Extrae las imágenes adjuntas en Base64 de un correo multiparte,
+     * las decodifica y las guarda en el directorio local.
+     */
+    public static java.util.List<String> extraerImagenes(String correoCompleto) {
+        java.util.List<String> archivosGuardados = new java.util.ArrayList<>();
+        if (correoCompleto == null || !correoCompleto.toLowerCase().contains("content-type: multipart/")) {
+            return archivosGuardados;
+        }
+
+        String boundary = extraerBoundary(correoCompleto);
+        if (boundary == null) return archivosGuardados;
+
+        java.io.File dir = new java.io.File("imagenes_adjuntas");
+        if (!dir.exists()) dir.mkdirs();
+
+        String[] partes = correoCompleto.split("--" + boundary);
+        for (String parte : partes) {
+            if (parte.toLowerCase().contains("content-type: image/")) {
+                // Encontrar el nombre del archivo si existe
+                String filename = "img_" + System.currentTimeMillis() + ".jpg";
+                Matcher fm = Pattern.compile("filename=\"?([^\";\\s]+)\"?").matcher(parte);
+                if (fm.find()) filename = fm.group(1);
+
+                // Encontrar el contenido base64 (después de doble salto de línea)
+                String[] subpartes = parte.split("(\\r?\\n){2}", 2);
+                if (subpartes.length == 2) {
+                    String base64Data = subpartes[1].replaceAll("\\s+", ""); // Quitar saltos de línea
+                    try {
+                        byte[] bytes = java.util.Base64.getDecoder().decode(base64Data);
+                        java.io.File file = new java.io.File(dir, filename);
+                        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(file)) {
+                            fos.write(bytes);
+                        }
+                        archivosGuardados.add(file.getName());
+                        System.out.println("Imagen guardada: " + file.getAbsolutePath());
+                    } catch (Exception ex) {
+                        System.out.println("Error decodificando imagen: " + ex.getMessage());
+                    }
+                }
+            }
+        }
+        return archivosGuardados;
     }
 
     /**

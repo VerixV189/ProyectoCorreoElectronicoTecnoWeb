@@ -67,11 +67,14 @@ public class ClienteSMTP {
 
                 // Enviar encabezados y cuerpo del correo
                 // El punto en línea sola indica el fin del mensaje
+                // Normalizar los saltos de línea a CRLF para evitar el error "Bare linefeed (LF) not allowed"
+                String cuerpoNormalizado = cuerpo.replace("\r\n", "\n").replace("\n", "\r\n");
+                
                 String mensaje = "From: " + correoEmisor + "\r\n"
                         + "To: " + destinatario + "\r\n"
                         + "Subject: " + asunto + "\r\n"
                         + "\r\n"
-                        + cuerpo + "\r\n"
+                        + cuerpoNormalizado + "\r\n"
                         + ".\r\n";
                 enviarComando(salida, mensaje);
                 System.out.println("S : " + entrada.readLine());

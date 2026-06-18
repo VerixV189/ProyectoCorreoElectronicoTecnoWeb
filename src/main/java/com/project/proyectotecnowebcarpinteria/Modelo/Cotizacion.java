@@ -26,14 +26,13 @@ public class Cotizacion {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] fila = new String[7];
+                String[] fila = new String[6];
                 fila[0] = String.valueOf(rs.getInt(1));
                 fila[1] = rs.getString(2);
                 fila[2] = rs.getString(3);
                 fila[3] = rs.getString(4);
                 fila[4] = rs.getString(5);
                 fila[5] = rs.getString(6);
-                fila[6] = rs.getString(7);
                 lista.add(fila);
             }
         } catch (SQLException ex) {
@@ -43,15 +42,14 @@ public class Cotizacion {
     }
 
     // Registrar cotizacion
-    public int registrar(String descripcion, String estado, int id_cliente, int id_carpintero) {
-        String query = "INSERT INTO cotizacion (descripcion, estado, id_cliente, id_carpintero) VALUES (?, ?, ?, ?)";
+    public int registrar(String descripcion, String estado, int id_cliente) {
+        String query = "INSERT INTO cotizacion (descripcion, estado, id_cliente) VALUES (?, ?, ?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
             pst.setString(1, descripcion);
             pst.setString(2, estado);
             pst.setInt(3, id_cliente);
-            pst.setInt(4, id_carpintero);
             int filasAfectadas = pst.executeUpdate();
 
             if (filasAfectadas > 0) {
@@ -69,16 +67,15 @@ public class Cotizacion {
     }
 
     // Actualizar cotizacion
-    public void actualizar(int id, String descripcion, String estado, int id_cliente, int id_carpintero) {
-        String query = "UPDATE cotizacion SET descripcion = ?, estado= ?, id_cliente = ?, id_carpintero = ? WHERE id = ?";
+    public void actualizar(int id, String descripcion, String estado, int id_cliente) {
+        String query = "UPDATE cotizacion SET descripcion = ?, estado= ?, id_cliente = ? WHERE id = ?";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query);
 
             pst.setString(1, descripcion);
             pst.setString(2, estado);
             pst.setInt(3, id_cliente);
-            pst.setInt(4, id_carpintero);
-            pst.setInt(5, id);
+            pst.setInt(4, id);
 
             pst.executeUpdate();
         } catch (SQLException ex) {

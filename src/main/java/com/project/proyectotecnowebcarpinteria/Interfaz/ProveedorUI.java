@@ -21,7 +21,7 @@ public class ProveedorUI implements ComandoUI {
     }
 
     @Override
-    public String ejecutar(String comando, String parametros) {
+    public String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas) {
         try {
             switch (comando) {
                 case "LISPROV":  return listar();

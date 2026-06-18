@@ -75,19 +75,21 @@ public class PuntoDeEntrada {
                 String emisor = ProcesadorComandos.obtenerCorreoEmisor(correoCompleto);
                 System.out.println("Emisor detectado: " + emisor);
 
-                // 3c. Extraer el cuerpo del correo
+                // 3c. Extraer el cuerpo del correo y las imágenes adjuntas
                 String cuerpo = ProcesadorComandos.getCuerpo(correoCompleto);
+                java.util.List<String> imagenes = ProcesadorComandos.extraerImagenes(correoCompleto);
                 System.out.println("Cuerpo del correo:\n" + cuerpo);
+                if (!imagenes.isEmpty()) System.out.println("Imágenes extraídas: " + imagenes.size());
 
                 // 3d. Interpretar el comando y generar la respuesta
-                String respuesta = procesador.procesarComando(cuerpo);
+                String respuesta = procesador.procesarComando(cuerpo, imagenes);
                 System.out.println("Respuesta generada:\n" + respuesta);
 
                 // 3e. Enviar la respuesta al emisor (si se pudo identificar)
                 if (emisor != null && !emisor.isBlank()) {
                     System.out.println("=== Enviando respuesta a: " + emisor + " ===");
                     try {
-                        smtp.enviarCorreo("grupo07sa@tecnoweb.org.bo", "RE: Respuesta del sistema de carpintería", respuesta);
+                            smtp.enviarCorreo(emisor, "RE: Respuesta del sistema de carpintería", respuesta);
                     } catch (Exception smtpEx) {
                         System.err.println("⚠ No se pudo enviar el correo de respuesta: " + smtpEx.getMessage());
                         System.err.println("  La respuesta que se intentó enviar fue:\n" + respuesta);

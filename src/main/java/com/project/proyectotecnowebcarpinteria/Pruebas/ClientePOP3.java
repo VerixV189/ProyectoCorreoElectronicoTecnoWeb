@@ -81,7 +81,7 @@ public class ClientePOP3 {
                 count++;
             }
         }
-        return count;
+        return count - 1;
     }
 
     /**

@@ -19,19 +19,23 @@ public class Insumo {
     // Listar insumos
     public List<String[]> listar() {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM insumo";
+        String query = "SELECT i.id, i.nombre, i.id_proveedor, i.created_at, i.updated_at, COALESCE(STRING_AGG(img.url, ', '), 'Sin imagen') as imagenes " +
+                       "FROM insumo i LEFT JOIN imagen img ON i.id = img.id_insumo " +
+                       "GROUP BY i.id, i.nombre, i.id_proveedor, i.created_at, i.updated_at " +
+                       "ORDER BY i.id";
 
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] fila = new String[5];
+                String[] fila = new String[6];
                 fila[0] = String.valueOf(rs.getInt(1));
                 fila[1] = rs.getString(2);
                 fila[2] = rs.getString(3);
                 fila[3] = rs.getString(4);
                 fila[4] = rs.getString(5);
+                fila[5] = rs.getString(6);
                 lista.add(fila);
             }
         } catch (SQLException ex) {

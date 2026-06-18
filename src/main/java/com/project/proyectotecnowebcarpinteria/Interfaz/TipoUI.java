@@ -21,7 +21,7 @@ public class TipoUI implements ComandoUI {
     }
 
     @Override
-    public String ejecutar(String comando, String parametros) {
+    public String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas) {
         try {
             switch (comando) {
                 case "LISTIP":  return listar();

@@ -16,7 +16,8 @@ public interface ComandoUI {
      * @param comando    Nombre del comando en MAYÚSCULAS (ej: "LISUSU", "REGUSU").
      * @param parametros Contenido dentro de los corchetes (ej: "*", "Juan,Perez,...").
      *                   Puede estar vacío si el comando no requiere parámetros.
+     * @param imagenesAdjuntas Lista de nombres de archivos de imagen adjuntos en el correo.
      * @return Texto de respuesta formateado, listo para enviar como cuerpo de correo.
      */
-    String ejecutar(String comando, String parametros);
+    String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas);
 }

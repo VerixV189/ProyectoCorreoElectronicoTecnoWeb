@@ -21,11 +21,11 @@ public class ProductoUI implements ComandoUI {
     }
 
     @Override
-    public String ejecutar(String comando, String parametros) {
+    public String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas) {
         try {
             switch (comando) {
                 case "LISPROD":  return listar();
-                case "REGPROD":  return registrar(parametros);
+                case "REGPROD":  return registrar(parametros, imagenesAdjuntas);
                 case "ACTPROD":  return actualizar(parametros);
                 case "ELIMPROD": return eliminar(parametros);
                 default: return error(comando, "Comando no asociado a ProductoUI.");
@@ -37,24 +37,28 @@ public class ProductoUI implements ComandoUI {
 
     private String listar() {
         List<String[]> lista = controller.listar();
-        if (lista == null || lista.isEmpty()) {
-            return "=== LISTA DE PRODUCTOS ===\n(No hay productos registrados.)";
-        }
+        if (lista == null || lista.isEmpty()) return "=== LISTA DE PRODUCTOS ===\n(No hay productos registrados.)";
         StringBuilder sb = new StringBuilder("=== LISTA DE PRODUCTOS ===\n");
-        sb.append(String.format("%-5s %-20s %-8s %-10s %-10s%n", "ID", "Nombre", "Cantidad", "Precio", "Estado"));
-        sb.append("-".repeat(60)).append("\n");
-        for (String[] p : lista) {
-            sb.append(String.format("%-5s %-20s %-8s %-10s %-10s%n",
-                    get(p, 0), get(p, 1), get(p, 2), get(p, 3), get(p, 4)));
-        }
+        sb.append(String.format("%-5s %-20s %-10s %-10s %-20s %-15s %-10s %-30s%n", "ID", "Nombre", "Cantidad", "Precio", "Descripción", "Estado", "idTipo", "Imágenes"));
+        sb.append("-".repeat(130)).append("\n");
+        for (String[] i : lista) sb.append(String.format("%-5s %-20s %-10s %-10s %-20s %-15s %-10s %-30s%n", get(i,0), get(i,1), get(i,2), get(i,3), get(i,4), get(i,5), get(i,6), get(i,9)));
         return sb.toString();
     }
 
-    private String registrar(String params) {
+    private String registrar(String params, java.util.List<String> imagenesAdjuntas) {
         String[] p = split(params, 6, "nombre,cantidad,precio,descripcion,estado,idTipo");
-        int id = controller.registrar(p[0], parseInt(p[1], "cantidad"), parseFloat(p[2], "precio"),
-                p[3], p[4], parseInt(p[5], "idTipo"));
-        return "=== PRODUCTO REGISTRADO ===\nID asignado: " + id;
+        int id = controller.registrar(p[0], parseInt(p[1], "cantidad"), parseFloat(p[2], "precio"), p[3], p[4], parseInt(p[5], "idTipo"));
+        
+        int imgsRegistradas = 0;
+        if (id > 0 && imagenesAdjuntas != null && !imagenesAdjuntas.isEmpty()) {
+            com.project.proyectotecnowebcarpinteria.Controlador.ImagenController imgCtrl = new com.project.proyectotecnowebcarpinteria.Controlador.ImagenController();
+            for (String imgUrl : imagenesAdjuntas) {
+                imgCtrl.registrar(imgUrl, id, 0);
+                imgsRegistradas++;
+            }
+        }
+        
+        return "=== PRODUCTO REGISTRADO ===\nID asignado: " + id + "\nImágenes guardadas: " + imgsRegistradas;
     }
 
     private String actualizar(String params) {

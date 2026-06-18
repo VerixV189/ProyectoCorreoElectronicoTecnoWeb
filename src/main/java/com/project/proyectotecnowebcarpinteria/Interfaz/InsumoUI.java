@@ -21,11 +21,11 @@ public class InsumoUI implements ComandoUI {
     }
 
     @Override
-    public String ejecutar(String comando, String parametros) {
+    public String ejecutar(String comando, String parametros, java.util.List<String> imagenesAdjuntas) {
         try {
             switch (comando) {
                 case "LISINSU":  return listar();
-                case "REGINSU":  return registrar(parametros);
+                case "REGINSU":  return registrar(parametros, imagenesAdjuntas);
                 case "ACTINSU":  return actualizar(parametros);
                 case "ELIMINSU": return eliminar(parametros);
                 default: return error(comando, "Comando no asociado a InsumoUI.");
@@ -39,16 +39,26 @@ public class InsumoUI implements ComandoUI {
         List<String[]> lista = controller.listar();
         if (lista == null || lista.isEmpty()) return "=== LISTA DE INSUMOS ===\n(No hay insumos registrados.)";
         StringBuilder sb = new StringBuilder("=== LISTA DE INSUMOS ===\n");
-        sb.append(String.format("%-5s %-20s %-15s%n", "ID", "Nombre", "idProveedor"));
-        sb.append("-".repeat(45)).append("\n");
-        for (String[] i : lista) sb.append(String.format("%-5s %-20s %-15s%n", get(i,0), get(i,1), get(i,2)));
+        sb.append(String.format("%-5s %-20s %-15s %-30s%n", "ID", "Nombre", "idProveedor", "Imágenes"));
+        sb.append("-".repeat(75)).append("\n");
+        for (String[] i : lista) sb.append(String.format("%-5s %-20s %-15s %-30s%n", get(i,0), get(i,1), get(i,2), get(i,5)));
         return sb.toString();
     }
 
-    private String registrar(String params) {
+    private String registrar(String params, List<String> imagenesAdjuntas) {
         String[] p = split(params, 2, "nombre,idProveedor");
         int id = controller.registrar(p[0], parseInt(p[1], "idProveedor"));
-        return "=== INSUMO REGISTRADO ===\nID asignado: " + id;
+        
+        int imgsRegistradas = 0;
+        if (id > 0 && imagenesAdjuntas != null && !imagenesAdjuntas.isEmpty()) {
+            com.project.proyectotecnowebcarpinteria.Controlador.ImagenController imgCtrl = new com.project.proyectotecnowebcarpinteria.Controlador.ImagenController();
+            for (String imgUrl : imagenesAdjuntas) {
+                imgCtrl.registrar(imgUrl, 0, id);
+                imgsRegistradas++;
+            }
+        }
+        
+        return "=== INSUMO REGISTRADO ===\nID asignado: " + id + "\nImágenes guardadas: " + imgsRegistradas;
     }
 
     private String actualizar(String params) {

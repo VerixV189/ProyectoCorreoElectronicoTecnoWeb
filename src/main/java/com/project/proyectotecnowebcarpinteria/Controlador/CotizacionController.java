@@ -22,21 +22,19 @@ public class CotizacionController {
         return cotizacion.listar();
     }
 
-    public int registrar(String descripcion, String estado, int idCliente, int idCarpintero) {
+    public int registrar(String descripcion, String estado, int idCliente) {
         ValidacionEntrada.texto(descripcion, "descripcion");
         ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.id(idCliente, "idCliente");
-        ValidacionEntrada.id(idCarpintero, "idCarpintero");
-        return cotizacion.registrar(descripcion, estado, idCliente, idCarpintero);
+        return cotizacion.registrar(descripcion, estado, idCliente);
     }
 
-    public void actualizar(int id, String descripcion, String estado, int idCliente, int idCarpintero) {
+    public void actualizar(int id, String descripcion, String estado, int idCliente) {
         ValidacionEntrada.id(id, "id");
         ValidacionEntrada.texto(descripcion, "descripcion");
         ValidacionEntrada.texto(estado, "estado");
         ValidacionEntrada.id(idCliente, "idCliente");
-        ValidacionEntrada.id(idCarpintero, "idCarpintero");
-        cotizacion.actualizar(id, descripcion, estado, idCliente, idCarpintero);
+        cotizacion.actualizar(id, descripcion, estado, idCliente);
     }
 
     public void eliminar(int id) {
