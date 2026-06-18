@@ -8,8 +8,8 @@ import java.util.List;
  *
  * Comandos soportados:
  *   LISCARP[*]
- *   REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]
- *   ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]
+ *   REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora]
+ *   ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora]
  *   ELIMCARP[id]
  */
 public class CarpinteroUI implements ComandoUI {
@@ -52,16 +52,16 @@ public class CarpinteroUI implements ComandoUI {
     }
 
     private String registrar(String params) {
-        String[] p = split(params, 9, "nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol");
+        String[] p = split(params, 8, "nombre,apellido,email,password,telefono,estado,especialidad,costoHora");
         int id = controller.registrar(p[0], p[1], p[2], p[3], p[4], p[5], p[6],
-                parseFloat(p[7], "costoHora"), parseInt(p[8], "idRol"));
+                parseFloat(p[7], "costoHora"));
         return "=== CARPINTERO REGISTRADO ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
-        String[] p = split(params, 10, "id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol");
+        String[] p = split(params, 9, "id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora");
         controller.actualizar(parseInt(p[0], "id"), p[1], p[2], p[3], p[4], p[5], p[6], p[7],
-                parseFloat(p[8], "costoHora"), parseInt(p[9], "idRol"));
+                parseFloat(p[8], "costoHora"));
         return "=== CARPINTERO ACTUALIZADO ===\nID: " + p[0] + " actualizado correctamente.";
     }
 
@@ -97,8 +97,8 @@ public class CarpinteroUI implements ComandoUI {
         return "=== ERROR ===\nComando: " + comando + "\nMotivo: " + motivo + "\n=============\n"
                 + "Uso correcto:\n"
                 + "  LISCARP[*]\n"
-                + "  REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]\n"
-                + "  ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]\n"
+                + "  REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora]\n"
+                + "  ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora]\n"
                 + "  ELIMCARP[id]";
     }
 }

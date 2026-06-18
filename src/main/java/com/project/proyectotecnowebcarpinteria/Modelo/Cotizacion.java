@@ -93,5 +93,46 @@ public class Cotizacion {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }    
+    }
+
+    /**
+     * Obtiene el estado actual de una cotización.
+     *
+     * @param id ID de la cotización.
+     * @return El estado como String (ej: "Pendiente", "Confirmada", "Cancelada"),
+     *         o null si no existe.
+     */
+    public String obtenerEstado(int id) {
+        String query = "SELECT estado FROM cotizacion WHERE id = ?";
+        try (Connection con = Conexion.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Actualiza solo el campo estado de una cotización.
+     * Usado automáticamente al registrar un pedido para marcarla como 'Confirmada'.
+     *
+     * @param id           ID de la cotización.
+     * @param nuevoEstado  Nuevo estado a asignar (ej: "Confirmada").
+     */
+    public void actualizarEstado(int id, String nuevoEstado) {
+        String query = "UPDATE cotizacion SET estado = ? WHERE id = ?";
+        try (Connection con = Conexion.getConnection()) {
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, nuevoEstado);
+            pst.setInt(2, id);
+            pst.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

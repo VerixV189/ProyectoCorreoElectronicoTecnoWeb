@@ -200,6 +200,7 @@ CREATE TABLE pago (
     subtotal DECIMAL(12, 2) NOT NULL,
     interes DECIMAL(12, 2) DEFAULT 0.00,
     estado VARCHAR(20) DEFAULT 'Pendiente',
+    fecha_vencimiento DATE,
     id_venta INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

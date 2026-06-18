@@ -9,9 +9,18 @@ import java.util.List;
  *
  * Comandos soportados:
  *   LISPED[*]
- *   REGPED[codigo,precio,fechaEntrega,idCotizacion]    (fechaEntrega: YYYY-MM-DD)
- *   ACTPED[id,codigo,precio,fechaEntrega,idCotizacion]
+ *       → Lista todos los pedidos registrados.
+ *
+ *   REGPED[codigo,precio,fechaEntrega(YYYY-MM-DD),idCotizacion]
+ *       → Registra un nuevo pedido asociado a una cotización.
+ *         IMPORTANTE: La cotización no debe estar en estado 'Cancelada' o 'Rechazada'.
+ *         Al crear el pedido, el estado de la cotización cambia automáticamente a 'Confirmada'.
+ *
+ *   ACTPED[id,codigo,precio,fechaEntrega(YYYY-MM-DD),idCotizacion]
+ *       → Actualiza los datos de un pedido existente.
+ *
  *   ELIMPED[id]
+ *       → Elimina un pedido por su ID.
  */
 public class PedidoUI implements ComandoUI {
 
@@ -49,7 +58,9 @@ public class PedidoUI implements ComandoUI {
     private String registrar(String params) {
         String[] p = split(params, 4, "codigo,precio,fechaEntrega(YYYY-MM-DD),idCotizacion");
         int id = controller.registrar(p[0], parseFloat(p[1], "precio"), parseDate(p[2]), parseInt(p[3], "idCotizacion"));
-        return "=== PEDIDO REGISTRADO ===\nID asignado: " + id;
+        return "=== PEDIDO REGISTRADO ===\n"
+                + "ID asignado: " + id + "\n"
+                + "La cotizacion #" + p[3].trim() + " fue marcada automaticamente como 'Confirmada'.";
     }
 
     private String actualizar(String params) {
@@ -66,12 +77,12 @@ public class PedidoUI implements ComandoUI {
 
     private String[] split(String params, int expected, String formato) {
         String[] p = params.split("\u001F", -1);
-        if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parámetros: " + formato + "\nRecibidos: " + p.length);
+        if (p.length != expected) throw new IllegalArgumentException("Se esperaban " + expected + " parametros: " + formato + "\nRecibidos: " + p.length);
         return p;
     }
     private int parseInt(String v, String c) { try { return Integer.parseInt(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo '" + c + "' debe ser entero. Recibido: \"" + v + "\""); } }
-    private float parseFloat(String v, String c) { try { return Float.parseFloat(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo '" + c + "' debe ser numérico. Recibido: \"" + v + "\""); } }
-    private Date parseDate(String v) { try { return Date.valueOf(v.trim()); } catch (Exception e) { throw new IllegalArgumentException("Fecha inválida. Formato esperado: YYYY-MM-DD. Recibido: \"" + v + "\""); } }
+    private float parseFloat(String v, String c) { try { return Float.parseFloat(v.trim()); } catch (NumberFormatException e) { throw new IllegalArgumentException("Campo '" + c + "' debe ser numerico. Recibido: \"" + v + "\""); } }
+    private Date parseDate(String v) { try { return Date.valueOf(v.trim()); } catch (Exception e) { throw new IllegalArgumentException("Fecha invalida. Formato esperado: YYYY-MM-DD. Recibido: \"" + v + "\""); } }
     private String get(String[] arr, int i) { return (arr != null && i < arr.length && arr[i] != null) ? arr[i] : "-"; }
     private String error(String cmd, String motivo) {
         return "=== ERROR ===\nComando: " + cmd + "\nMotivo: " + motivo + "\n=============\n"

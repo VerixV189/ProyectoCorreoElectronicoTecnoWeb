@@ -25,7 +25,8 @@ public class CarpinteroController {
         return carpintero.listar();
     }
 
-    public int registrar(String nombre, String apellido, String email, String password, String telefono, String estado, String especialidad, float costoHora, int idRol) {
+    public int registrar(String nombre, String apellido, String email, String password, String telefono, String estado, String especialidad, float costoHora) {
+        int idRol = 3; // 3 es Carpintero
         ValidacionEntrada.datosUsuario(nombre, apellido, email, password, telefono, estado, idRol);
         ValidacionEntrada.texto(especialidad, "especialidad");
         ValidacionEntrada.noNegativo(costoHora, "costoHora");
@@ -33,7 +34,8 @@ public class CarpinteroController {
         return carpintero.registrar(id, especialidad, costoHora);
     }
 
-    public void actualizar(int id, String nombre, String apellido, String email, String password, String telefono, String estado, String especialidad, float costoHora, int idRol) {
+    public void actualizar(int id, String nombre, String apellido, String email, String password, String telefono, String estado, String especialidad, float costoHora) {
+        int idRol = 3; // 3 es Carpintero
         ValidacionEntrada.id(id, "id");
         ValidacionEntrada.datosUsuario(nombre, apellido, email, password, telefono, estado, idRol);
         ValidacionEntrada.texto(especialidad, "especialidad");

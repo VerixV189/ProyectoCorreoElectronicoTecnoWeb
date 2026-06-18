@@ -13,6 +13,7 @@ import java.util.Map;
  * Para agregar un nuevo recurso:
  *   1. Crea la clase XxxUI implementando ComandoUI.
  *   2. Registra sus comandos en el bloque estático de abajo.
+ *   3. Añade la documentación en listarComandosDisponibles().
  */
 public class RegistroComandos {
 
@@ -57,6 +58,13 @@ public class RegistroComandos {
         mapa.put("ACTCOT",  cotizacionUI);
         mapa.put("ELIMCOT", cotizacionUI);
 
+        // --- DetalleCotizacion ---
+        DetalleCotizacionUI detalleCotizacionUI = new DetalleCotizacionUI();
+        mapa.put("LISDETCOT",  detalleCotizacionUI);
+        mapa.put("REGDETCOT",  detalleCotizacionUI);
+        mapa.put("ACTDETCOT",  detalleCotizacionUI);
+        mapa.put("ELIMDETCOT", detalleCotizacionUI);
+
         // --- Pedido ---
         PedidoUI pedidoUI = new PedidoUI();
         mapa.put("LISPED",  pedidoUI);
@@ -80,10 +88,12 @@ public class RegistroComandos {
 
         // --- Venta ---
         VentaUI ventaUI = new VentaUI();
-        mapa.put("LISVEN",  ventaUI);
-        mapa.put("REGVEN",  ventaUI);
-        mapa.put("ACTVEN",  ventaUI);
-        mapa.put("ELIMVEN", ventaUI);
+        mapa.put("LISVEN",    ventaUI);
+        mapa.put("REGVEN",    ventaUI);   // Registro basico sin pagos automaticos
+        mapa.put("REGVENCON", ventaUI);   // Registro venta al Contado + 1 pago auto
+        mapa.put("REGVENCRE", ventaUI);   // Registro venta a Credito + N pagos auto
+        mapa.put("ACTVEN",    ventaUI);
+        mapa.put("ELIMVEN",   ventaUI);
 
         // --- Insumo ---
         InsumoUI insumoUI = new InsumoUI();
@@ -127,6 +137,17 @@ public class RegistroComandos {
         mapa.put("ACTPERM",  permisoUI);
         mapa.put("ELIMPERM", permisoUI);
 
+        // --- Reportes ---
+        ReporteUI reporteUI = new ReporteUI();
+        mapa.put("REPVENTOT",   reporteUI);
+        mapa.put("REPVENPROD",  reporteUI);
+        mapa.put("REPCOTCARP",  reporteUI);
+        mapa.put("REPDETPED",   reporteUI);
+        mapa.put("REPPAGVEN",   reporteUI);
+        mapa.put("REPPRODINV",  reporteUI);
+        mapa.put("REPINSUPROV", reporteUI);
+        mapa.put("REPPEDFEC",   reporteUI);
+
         REGISTRO = Collections.unmodifiableMap(mapa);
     }
 
@@ -148,33 +169,38 @@ public class RegistroComandos {
      * @return String con la lista de comandos disponibles.
      */
     public static String listarComandosDisponibles() {
-        return "Comandos disponibles (deben enviarse en MAYÚSCULAS):\n"
+        return "Comandos disponibles (deben enviarse en MAYUSCULAS):\n"
                 + "\n[USUARIO]\n"
                 + "  LISUSU[*]\n"
                 + "  REGUSU[nombre,apellido,email,password,telefono,estado,idRol]\n"
                 + "  ACTUSU[id,nombre,apellido,email,password,telefono,estado,idRol]\n"
                 + "  ELIMUSU[id]\n"
-                + "\n[CLIENTE]\n"
+                + "\n[CLIENTE] (idRol se asigna automaticamente = 2)\n"
                 + "  LISCLI[*]\n"
-                + "  REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]\n"
-                + "  ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]\n"
+                + "  REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]\n"
+                + "  ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]\n"
                 + "  ELIMCLI[id]\n"
-                + "\n[CARPINTERO]\n"
+                + "\n[CARPINTERO] (idRol se asigna automaticamente = 3)\n"
                 + "  LISCARP[*]\n"
-                + "  REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]\n"
-                + "  ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora,idRol]\n"
+                + "  REGCARP[nombre,apellido,email,password,telefono,estado,especialidad,costoHora]\n"
+                + "  ACTCARP[id,nombre,apellido,email,password,telefono,estado,especialidad,costoHora]\n"
                 + "  ELIMCARP[id]\n"
-                + "\n[PRODUCTO]\n"
+                + "\n[PRODUCTO] (adjuntar imagenes al correo para guardarlas)\n"
                 + "  LISPROD[*]\n"
                 + "  REGPROD[nombre,cantidad,precio,descripcion,estado,idTipo]\n"
                 + "  ACTPROD[id,nombre,cantidad,precio,descripcion,estado,idTipo]\n"
                 + "  ELIMPROD[id]\n"
-                + "\n[COTIZACIÓN]\n"
+                + "\n[COTIZACION]\n"
                 + "  LISCOT[*]\n"
                 + "  REGCOT[descripcion,estado,idCliente]\n"
                 + "  ACTCOT[id,descripcion,estado,idCliente]\n"
                 + "  ELIMCOT[id]\n"
-                + "\n[PEDIDO]\n"
+                + "\n[DETALLE COTIZACION] (asigna carpintero y precio a una cotizacion)\n"
+                + "  LISDETCOT[idCotizacion]\n"
+                + "  REGDETCOT[precio,descripcion,idCotizacion,idCarpintero]\n"
+                + "  ACTDETCOT[id,precio,descripcion,idCotizacion,idCarpintero]\n"
+                + "  ELIMDETCOT[id]\n"
+                + "\n[PEDIDO] (la cotizacion se marca 'Confirmada' automaticamente al crear el pedido)\n"
                 + "  LISPED[*]\n"
                 + "  REGPED[codigo,precio,fechaEntrega(YYYY-MM-DD),idCotizacion]\n"
                 + "  ACTPED[id,codigo,precio,fechaEntrega(YYYY-MM-DD),idCotizacion]\n"
@@ -184,17 +210,23 @@ public class RegistroComandos {
                 + "  REGDET[cantidad,precio,estado,descripcion,idPedido,idProducto]\n"
                 + "  ACTDET[id,cantidad,precio,estado,descripcion,idPedido,idProducto]\n"
                 + "  ELIMDET[id]\n"
-                + "\n[PAGO]\n"
-                + "  LISPAG[*]\n"
-                + "  REGPAG[subtotal,interes,estado,idVenta]\n"
-                + "  ACTPAG[id,subtotal,interes,estado,idVenta]\n"
+                + "\n[PAGO] (manual - para pagos automaticos use REGVENCON o REGVENCRE)\n"
+                + "  LISPAG[*]  (muestra EN MORA si fecha_vencimiento ya paso y estado es Pendiente)\n"
+                + "  REGPAG[subtotal,interes,estado,fechaVencimiento(YYYY-MM-DD o null),idVenta]\n"
+                + "  ACTPAG[id,subtotal,interes,estado,fechaVencimiento(YYYY-MM-DD o null),idVenta]\n"
                 + "  ELIMPAG[id]\n"
                 + "\n[VENTA]\n"
                 + "  LISVEN[*]\n"
                 + "  REGVEN[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),tipo,idPedido,idCliente]\n"
+                + "      (registro basico SIN pagos automaticos)\n"
+                + "  REGVENCON[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),idPedido,idCliente]\n"
+                + "      (venta al CONTADO: genera 1 pago automatico, estado=Pagado, interes=0)\n"
+                + "  REGVENCRE[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),idPedido,idCliente,interes,numeroPagos]\n"
+                + "      (venta a CREDITO: genera N cuotas automaticas, min 2, estado=Pendiente)\n"
+                + "      (interes es por cuota, ej: 5.0 = 5%; vencimientos cada 30 dias)\n"
                 + "  ACTVEN[id,codigo,totalCosto,fechaEntregado(YYYY-MM-DD),tipo,idPedido,idCliente]\n"
                 + "  ELIMVEN[id]\n"
-                + "\n[INSUMO]\n"
+                + "\n[INSUMO] (adjuntar imagenes al correo para guardarlas)\n"
                 + "  LISINSU[*]\n"
                 + "  REGINSU[nombre,idProveedor]\n"
                 + "  ACTINSU[id,nombre,idProveedor]\n"
@@ -223,7 +255,16 @@ public class RegistroComandos {
                 + "  LISPERM[*]\n"
                 + "  REGPERM[nombre]\n"
                 + "  ACTPERM[id,nombre]\n"
-                + "  ELIMPERM[id]";
+                + "  ELIMPERM[id]\n"
+                + "\n[REPORTES] (Fechas: YYYY-MM-DD)\n"
+                + "  REPVENTOT[fechaInicio,fechaFin]       - Ventas totales\n"
+                + "  REPVENPROD[fechaInicio,fechaFin]      - Ventas por producto\n"
+                + "  REPCOTCARP[fechaInicio,fechaFin]      - Cotizaciones por carpintero\n"
+                + "  REPDETPED[idPedido]                   - Detalle de pedido\n"
+                + "  REPPAGVEN[fechaInicio,fechaFin]       - Pagos por venta\n"
+                + "  REPPRODINV[idTipo]                    - Inventario productos (0=todos)\n"
+                + "  REPINSUPROV[idProveedor]              - Insumos por proveedor (0=todos)\n"
+                + "  REPPEDFEC[fechaInicio,fechaFin]       - Pedidos por fecha";
     }
 
     // Constructor privado: clase de utilidad, no instanciable.

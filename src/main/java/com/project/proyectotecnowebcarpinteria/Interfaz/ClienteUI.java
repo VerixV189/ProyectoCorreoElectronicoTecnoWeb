@@ -8,8 +8,8 @@ import java.util.List;
  *
  * Comandos soportados:
  *   LISCLI[*]
- *   REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]
- *   ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]
+ *   REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]
+ *   ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]
  *   ELIMCLI[id]
  */
 public class ClienteUI implements ComandoUI {
@@ -53,18 +53,16 @@ public class ClienteUI implements ComandoUI {
     }
 
     private String registrar(String params) {
-        String[] p = split(params, 10, "REGCLI",
-                "nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol");
-        int id = controller.registrar(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8],
-                parseInt(p[9], "idRol"));
+        String[] p = split(params, 9, "REGCLI",
+                "nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio");
+        int id = controller.registrar(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]);
         return "=== CLIENTE REGISTRADO ===\nID asignado: " + id;
     }
 
     private String actualizar(String params) {
-        String[] p = split(params, 11, "ACTCLI",
-                "id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol");
-        controller.actualizar(parseInt(p[0], "id"), p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9],
-                parseInt(p[10], "idRol"));
+        String[] p = split(params, 10, "ACTCLI",
+                "id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio");
+        controller.actualizar(parseInt(p[0], "id"), p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]);
         return "=== CLIENTE ACTUALIZADO ===\nID: " + p[0] + " actualizado correctamente.";
     }
 
@@ -99,8 +97,8 @@ public class ClienteUI implements ComandoUI {
         return "=== ERROR ===\nComando: " + comando + "\nMotivo: " + motivo + "\n=============\n"
                 + "Uso correcto:\n"
                 + "  LISCLI[*]\n"
-                + "  REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]\n"
-                + "  ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio,idRol]\n"
+                + "  REGCLI[nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]\n"
+                + "  ACTCLI[id,nombre,apellido,email,password,telefono,estado,nitFacturacion,razonSocial,direccionEnvio]\n"
                 + "  ELIMCLI[id]";
     }
 }
