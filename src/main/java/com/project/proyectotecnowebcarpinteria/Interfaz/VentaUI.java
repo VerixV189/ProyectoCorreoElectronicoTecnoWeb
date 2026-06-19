@@ -20,7 +20,7 @@ import java.util.List;
  *       → Registra una venta al CONTADO con generacion automatica de pagos.
  *         Genera 1 pago por el total con estado 'Pagado' e interes 0.
  *
- *   REGVENCRE[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),idPedido,idCliente,interes,numeroPagos]
+                                    *   REGVENCRE[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),idPedido,idCliente,interes,numeroPagos]
  *       → Registra una venta a CREDITOREGVENCRE[codigo,totalCosto,fechaEntregado(YYYY-MM-DD),idPedido,idCliente,interes,numeroPagos] con generacion automatica de cuotas.
  *         Genera N pagos (minimo 2) con estado 'Pendiente', el interes indicado,
  *         y fechas de vencimiento cada 30 dias desde la fecha de entrega.

@@ -19,7 +19,7 @@ public class Permiso {
     // Listar permisos
     public List<String[]> listar() {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM permiso";
+        String query = "SELECT * FROM permisos";
 
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement ps = con.prepareStatement(query);
@@ -41,7 +41,7 @@ public class Permiso {
 
     // Registrar insumo
     public int registrar(String nombre) {
-        String query = "INSERT INTO permiso (nombre) VALUES (?)";
+        String query = "INSERT INTO permisos (nombre) VALUES (?)";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -64,12 +64,12 @@ public class Permiso {
 
     // Actualizar permiso
     public void actualizar(int id, String nombre) {
-        String query = "UPDATE permiso SET nombre = ? WHERE id = ?";
+        String query = "UPDATE permisos SET nombre = ? WHERE id = ?";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query);
 
             pst.setString(1, nombre);
-            pst.setInt(4, id);
+            pst.setInt(2, id);
 
             pst.executeUpdate();
         } catch (SQLException ex) {
@@ -78,7 +78,7 @@ public class Permiso {
     }
 
     public void eliminar(int id) {
-        String query = "DELETE FROM permiso WHERE id = ?";
+        String query = "DELETE FROM permisos WHERE id = ?";
         try (Connection con = Conexion.getConnection()) {
             PreparedStatement pst = con.prepareStatement(query);
 

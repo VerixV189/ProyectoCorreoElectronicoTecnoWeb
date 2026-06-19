@@ -17,7 +17,7 @@ CREATE TABLE rol (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE permiso (
+CREATE TABLE permisos (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -31,7 +31,7 @@ CREATE TABLE rol_permiso (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_rol) REFERENCES Rol(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_permiso) REFERENCES Permiso(id) ON DELETE CASCADE
+    FOREIGN KEY (id_permiso) REFERENCES permisos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE usuario (
@@ -234,7 +234,7 @@ INSERT INTO rol (id, nombre, estado) VALUES
 SELECT setval('rol_id_seq', (SELECT MAX(id) FROM rol));
 
 -- Insertar Permisos (Comandos soportados en el sistema)
-INSERT INTO permiso (id, nombre) VALUES
+INSERT INTO permisos (id, nombre) VALUES
 (1, 'LISUSU'), (2, 'REGUSU'), (3, 'ACTUSU'), (4, 'ELIMUSU'),
 (5, 'LISCLI'), (6, 'REGCLI'), (7, 'ACTCLI'), (8, 'ELIMCLI'),
 (9, 'LISCARP'), (10, 'REGCARP'), (11, 'ACTCARP'), (12, 'ELIMCARP'),
@@ -252,7 +252,7 @@ INSERT INTO permiso (id, nombre) VALUES
 (57, 'LISPERM'), (58, 'REGPERM'), (59, 'ACTPERM'), (60, 'ELIMPERM');
 
 -- Ajustar secuencia de id de la tabla permiso en PostgreSQL
-SELECT setval('permiso_id_seq', (SELECT MAX(id) FROM permiso));
+SELECT setval('permisos_id_seq', (SELECT MAX(id) FROM permisos));
 
 
 -- =========================================================================
@@ -261,7 +261,7 @@ SELECT setval('permiso_id_seq', (SELECT MAX(id) FROM permiso));
 
 -- 1. Administrador (id_rol = 1) tiene TODOS los permisos del sistema
 INSERT INTO rol_permiso (id_rol, id_permiso)
-SELECT 1, id FROM permiso;
+SELECT 1, id FROM permisos;
 
 -- 2. Cliente (id_rol = 2) tiene permisos selectivos de visualización y autoservicio
 INSERT INTO rol_permiso (id_rol, id_permiso) VALUES

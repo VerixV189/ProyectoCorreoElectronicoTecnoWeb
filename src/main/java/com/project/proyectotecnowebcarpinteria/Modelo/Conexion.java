@@ -12,9 +12,9 @@ import java.sql.SQLException;
  * @author erik
  */
 public class Conexion {
-    public static final String URL = "jdbc:postgresql://localhost:5432/carpinteria";
-    public static final String USER = "postgres";
-    public static final String PASSWORD = "12731031";
+    public static final String URL = "jdbc:postgresql://www.tecnoweb.org.bo:5432/db_grupo07sa";
+    public static final String USER = "grupo07sa";
+    public static final String PASSWORD = "grup007grup007*";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
